@@ -1,0 +1,46 @@
+function [eig_val, eig_vec] = power_2017114912(A, es, maxit)
+switch nargin
+    case 0 
+        error('Must enter matrix, es and maxit')
+    case 1
+        error('Must enter es and maxit')
+    case 2
+        error('Must enter maxit')
+end
+
+[m,n] = size(A);
+
+if m<3 || n<3, error('No 3X3 matrix'); end
+if m ~= n, error('No square matrix'); end
+if issymmetric(A) == 0, error('No symmetric matrix'); end
+
+I = ones(n, 1);
+eig_vec = 0;
+eig_val = 0;
+iter = 0;
+eig_val_old = 0;
+
+qst = input('Eigne value: the 1. largest    2. smallest ?');
+
+while(1)
+    if qst == 2, A = inv(A); end
+    
+    if iter == 0
+        pow = A*I;
+    else
+        eig_val_old = eig_val;
+        pow = A*eig_vec;
+    end
+        
+    eig_val = max(abs(pow));
+    if eig_val ~= max(pow), eig_val = -eig_val; end
+    eig_vec = pow/eig_val;
+    if qst ==2, eig_val = 1/eig_val; end
+
+    if iter ~= 0, ea = abs((eig_val - eig_val_old)/eig_val) * 100;
+        if ea <= es || iter >= maxit, break, end
+    end
+  
+    iter = iter + 1;
+end
+end
